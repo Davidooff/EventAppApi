@@ -1,14 +1,16 @@
+using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 //  https://learn.microsoft.com/en-us/ef/core/
-public class DatabaseContext : IdentityDbContext<User, IdentityRole<int>, int>
+public class DatabaseContext : IdentityDbContext<User, IdentityRole<int>, int>, IDatabaseContext
 {
     public DbSet<Audience> Audiences { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Event> Events { get; set; }
+    public DbSet<Sessions> Sessions { get; set; }
     public DbSet<Speaker> Speakers { get; set; }
 
 
@@ -53,6 +55,12 @@ public class DatabaseContext : IdentityDbContext<User, IdentityRole<int>, int>
         modelBuilder.Entity<Sessions>()
             .HasOne(s => s.User)
             .WithMany(u => u.Sessions)
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Sessions)
+            .WithOne(s => s.User)
             .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }

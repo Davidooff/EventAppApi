@@ -3,12 +3,8 @@
 /home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Infrastructure.pdb
 /home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Application.dll
 /home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Domain.dll
-/home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
-/home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
 /home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Application.pdb
 /home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Domain.pdb
-/home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.xml
-/home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.xml
 /home/david/RiderProjects/WebApplication1/Infrastructure/obj/Debug/net9.0/Infrastructure.csproj.AssemblyReference.cache
 /home/david/RiderProjects/WebApplication1/Infrastructure/obj/Debug/net9.0/Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
 /home/david/RiderProjects/WebApplication1/Infrastructure/obj/Debug/net9.0/Infrastructure.AssemblyInfoInputs.cache
@@ -20,3 +16,5 @@
 /home/david/RiderProjects/WebApplication1/Infrastructure/obj/Debug/net9.0/refint/Infrastructure.dll
 /home/david/RiderProjects/WebApplication1/Infrastructure/obj/Debug/net9.0/Infrastructure.pdb
 /home/david/RiderProjects/WebApplication1/Infrastructure/obj/Debug/net9.0/ref/Infrastructure.dll
+/home/david/RiderProjects/WebApplication1/Infrastructure/bin/Debug/net9.0/Infrastructure.runtimeconfig.json
+/home/david/RiderProjects/WebApplication1/Infrastructure/obj/Debug/net9.0/Infrastructure.genruntimeconfig.cache

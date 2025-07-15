@@ -25,8 +25,8 @@ public class TokenService: ITokenGenerator
     
     public (string accessToken, string refreshToken) GenerateTokens(int userId, int sessionId)
     {
-        return (GenerateToken(userId, _jwtSettings.accessTokenExpiration),
-            GenerateToken(sessionId, _jwtSettings.refreshTokenExpiration));
+        return (GenerateToken(userId, _jwtSettings.AccessTokenExpiration),
+            GenerateToken(sessionId, _jwtSettings.RefreshTokenExpiration));
     }
     
     public string GenerateToken(int userId, int expirationMinutes)
