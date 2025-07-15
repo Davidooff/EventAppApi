@@ -1,6 +1,6 @@
 namespace Application.Exceptions;
 
-public class InvalidTokenException
+public class InvalidTokenException: Exception
 {
-    
+    public InvalidTokenException() : base() { }
 }

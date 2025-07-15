@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 //  https://learn.microsoft.com/en-us/ef/core/
-public class DatabaseContext : IdentityDbContext<User, IdentityRole, string>
+public class DatabaseContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public DbSet<Audience> Audiences { get; set; }
-    public DbSet<Categorie> Categories { get; set; }
+    public DbSet<Category> Categories { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<Speaker> Speakers { get; set; }
 
@@ -48,6 +48,12 @@ public class DatabaseContext : IdentityDbContext<User, IdentityRole, string>
             .HasOne(a => a.User)
             .WithMany(u => u.Speakers)
             .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Sessions>()
+            .HasOne(s => s.User)
+            .WithMany(u => u.Sessions)
+            .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

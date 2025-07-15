@@ -12,6 +12,8 @@ builder.Services.AddOpenApi();
 
 //IOptions - data from appsettings.json to pass into DI
 builder.Services.Configure<DatabaseOption>(builder.Configuration.GetSection("Database"));
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
 
 builder.Services.AddDbContext<DatabaseContext>((serviceProvider, options) =>
 {

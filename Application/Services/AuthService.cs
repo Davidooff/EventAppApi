@@ -1,6 +1,8 @@
 using Application.Exceptions;
 using Application.Interfaces;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using WebApplication1.Dto;
 
 namespace Application.Services;
@@ -8,10 +10,14 @@ namespace Application.Services;
 public class AuthService
 {
     private readonly IIdentityService _identityService;
+    private readonly ITokenGenerator _tokenGenerator;
+    private readonly IdentityDbContext<User, IdentityRole<int>, int> _context;
     
-    public AuthService(IIdentityService identityService)
+    public AuthService(IIdentityService identityService, ITokenGenerator tokenGenerator, IdentityDbContext<User, IdentityRole<int>, int> context)
     {
         _identityService = identityService;
+        _tokenGenerator = tokenGenerator;
+        _context = context;
     }
 
     public async Task<AuthResultDto> LogIn(LoginDto loginDtoDto)
@@ -26,7 +32,11 @@ public class AuthService
         {
             throw new InvalidCredentialsException();
         }
-        
-        
+
+        var newSession = new Sessions { UserId = user.Id };
+        user.Sessions.Add(newSession);
+        _context.SaveChanges();
+        var (accT, refT) = _tokenGenerator.GenerateTokens(user.Id, newSession.Id);
+        return new AuthResultDto{accessToken = accT, refreshToken = accT};
     }
 }

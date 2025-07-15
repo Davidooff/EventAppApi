@@ -12,12 +12,12 @@ public class IdentityService : IIdentityService
         _userManager = userManager;
     }
 
-    public async Task<(bool Succeeded, string UserId)> CheckPasswordByEmailAsync(string email, string password)
+    public async Task<(bool Succeeded, int UserId)> CheckPasswordByEmailAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
         {
-            return (false, null);
+            return (false, -1);
         }
 
         var success = await _userManager.CheckPasswordAsync(user, password);
