@@ -508,7 +508,8 @@
       "System.Text.Encodings.Web/8.0.0": {},
       "Domain/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Identity": "2.3.1"
+          "Microsoft.AspNetCore.Identity": "2.3.1",
+          "Microsoft.Extensions.Identity.Stores": "9.0.7"
         },
         "runtime": {
           "Domain.dll": {

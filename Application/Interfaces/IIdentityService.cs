@@ -1,3 +1,5 @@
+using WebApplication1.Dto;
+
 namespace Application.Interfaces;
 
 public interface IIdentityService
@@ -7,4 +9,5 @@ public interface IIdentityService
 
     Task<User?> GetUserByEmailAsync(string email);
     // Add other methods you need, like CreateUser, GetRolesAsync, etc.
+    Task<User?> CreateAsync(RegisterDto registerDtoDto);
 }

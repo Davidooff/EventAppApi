@@ -6,8 +6,8 @@ public class JwtOptions
     // public string Issuer { get; set; } = string.Empty;
     // public string Audience { get; set; } = string.Empty;
 
-    public int accessTokenExpiration { get; set; } = 0;
-    public int refreshTokenExpiration { get; set; } = 0;
+    public int AccessTokenExpiration { get; set; } = 0; //mins
+    public int RefreshTokenExpiration { get; set; } = 0; //mins
 
     public string AccessTokenStorage { get; set; } = string.Empty;
     public string RefreshTokenStorage { get; set; } = string.Empty;

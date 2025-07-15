@@ -1,15 +1,12 @@
 /home/david/RiderProjects/WebApplication1/Domain/bin/Debug/net9.0/Domain.deps.json
 /home/david/RiderProjects/WebApplication1/Domain/bin/Debug/net9.0/Domain.dll
 /home/david/RiderProjects/WebApplication1/Domain/bin/Debug/net9.0/Domain.pdb
-/home/david/RiderProjects/WebApplication1/Domain/bin/Debug/net9.0/Microsoft.Extensions.Identity.Stores.dll
-/home/david/RiderProjects/WebApplication1/Domain/bin/Debug/net9.0/Microsoft.Extensions.Identity.Stores.xml
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.csproj.AssemblyReference.cache
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.GeneratedMSBuildEditorConfig.editorconfig
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.AssemblyInfoInputs.cache
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.AssemblyInfo.cs
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.csproj.CoreCompileInputs.cache
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.sourcelink.json
-/home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.csproj.Up2Date
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.dll
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/refint/Domain.dll
 /home/david/RiderProjects/WebApplication1/Domain/obj/Debug/net9.0/Domain.pdb

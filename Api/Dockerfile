@@ -24,3 +24,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Api.dll"]
+
+#sudo docker build -t event-api -f Api/Dockerfile 

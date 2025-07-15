@@ -1,5 +1,8 @@
 using System.Text;
+using Application.Interfaces;
+using Application.Services;
 using Domain.Options;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,21 +11,23 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+
 builder.Services.AddOpenApi();
 
 //IOptions - data from appsettings.json to pass into DI
 builder.Services.Configure<DatabaseOption>(builder.Configuration.GetSection("Database"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
-
-builder.Services.AddDbContext<DatabaseContext>((serviceProvider, options) =>
+builder.Services.AddDbContext<IDatabaseContext, DatabaseContext>((serviceProvider, options) =>
 {
     var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>().Value;
+    Console.WriteLine(dbOptions.ConnectionString);
     options.UseNpgsql(dbOptions.ConnectionString);
 });
 
 // Add identity manager
-builder.Services.AddIdentity<User, IdentityRole>(options =>
+builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
         options.Password.RequiredLength = 6;
@@ -48,10 +53,14 @@ builder.Services.AddAuthentication(options =>
             // ValidateAudience = true,
             // ValidAudience = builder.Configuration["Jwt:Audience"],
             // ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
         };
     });
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization(); 
+
+builder.Services.AddTransient<ITokenGenerator, TokenService>();
+builder.Services.AddTransient<IIdentityService, IdentityService>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
@@ -63,6 +72,10 @@ if (app.Environment.IsDevelopment())
 
 app.UsePathBase(new PathString("/api"));
 
-app.UseHttpsRedirection();
+/*app.UseAuthorization();*/
+
+app.MapControllers();
+
+// app.UseHttpsRedirection();
 
 app.Run();

@@ -1,6 +1,6 @@
 namespace Application.Exceptions;
 
-public class UnableToCreateException
+public class UnableToCreateException: Exception
 {
-    
+    public UnableToCreateException(): base() {}
 }

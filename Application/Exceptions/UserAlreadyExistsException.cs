@@ -1,6 +1,6 @@
 namespace Application.Exceptions;
 
-public class UserAlreadyExistsException
+public class UserAlreadyExistsException : Exception
 {
-    
+    public UserAlreadyExistsException(): base() {}
 }

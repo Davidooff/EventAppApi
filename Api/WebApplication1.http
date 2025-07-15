@@ -1,6 +1,10 @@
-@WebApplication1_HostAddress = http://localhost:5009
+@WebApplication1_HostAddress = http://localhost:5009/api
 
-GET {{WebApplication1_HostAddress}}/weatherforecast/
+POST {{WebApplication1_HostAddress}}/auth/login/
 Accept: application/json
 
+{
+  "email": "email@email.com",
+  "password": "content"
+}
 ###
