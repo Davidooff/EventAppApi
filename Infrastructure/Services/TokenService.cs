@@ -46,15 +46,15 @@ public class TokenService: ITokenGenerator
         return tokenHandler.WriteToken(token);
     }
 
-    public string GetIdFromToken(string token)
+    public string GetId(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = _signingCredentials.Key,
-            ValidateIssuer = true,
+            ValidateIssuer = false,
             // ValidIssuer = _jwtSettings.Issuer,
-            ValidateAudience = true,
+            ValidateAudience = false,
             // ValidAudience = _jwtSettings.Audience,
             ValidateLifetime = true 
         };
@@ -63,8 +63,9 @@ public class TokenService: ITokenGenerator
         {
             id = tokenHandler.ValidateToken(token, tokenValidationParameters, out _)
                 .FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new InvalidTokenException();
-        } catch
+        } catch (Exception err)
         {
+            Console.WriteLine(err.Message);
             throw new InvalidTokenException();
         }
 

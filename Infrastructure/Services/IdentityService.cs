@@ -13,16 +13,16 @@ public class IdentityService : IIdentityService
         _userManager = userManager;
     }
 
-    public async Task<(bool Succeeded, int UserId)> CheckPasswordByEmailAsync(string email, string password)
+    public async Task<(bool Succeeded, User user)> CheckPasswordByEmailAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
         {
-            return (false, -1);
+            return (false, new User{});
         }
 
         var success = await _userManager.CheckPasswordAsync(user, password);
-        return (success, user.Id);
+        return (success, user);
     }
     
     public async Task<bool> CheckPasswordByUserAsync(User user, string password)

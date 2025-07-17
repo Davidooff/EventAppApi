@@ -34,10 +34,10 @@ public class AuthService
         }
 
         var newSession = new Sessions { UserId = user.Id };
-        user.Sessions.Add(newSession);
+        _context.Sessions.Add(newSession);
         await _context.SaveChangesAsync();
         var (accT, refT) = _tokenGenerator.GenerateTokens(user.Id, newSession.Id);
-        return new AuthResultDto{accessToken = accT, refreshToken = accT};
+        return new AuthResultDto{accessToken = accT, refreshToken = refT};
     }
     
     public async Task<AuthResultDto> SignUp(RegisterDto registerDto)
@@ -60,7 +60,22 @@ public class AuthService
            _context.Sessions.Add(newSession);
            await _context.SaveChangesAsync();
            var (accT, refT) = _tokenGenerator.GenerateTokens(newUser.Id, newSession.Id);
-           return new AuthResultDto{accessToken = accT, refreshToken = accT};
+           return new AuthResultDto{accessToken = accT, refreshToken = refT};
        } 
+    }
+
+    public async Task<AuthResultDto> Refresh(string refreshToken)
+    {
+        var id = _tokenGenerator.GetId(refreshToken);
+
+        var session = await _context.Sessions.FindAsync(int.Parse(id));
+
+        if (session == null)
+        {
+            throw new InvalidTokenException();
+        }
+        
+        var newTokens = _tokenGenerator.GenerateTokens(session.UserId, session.Id);
+        return new AuthResultDto{accessToken = newTokens.accessToken, refreshToken = newTokens.refreshToken};
     }
 }

@@ -8,10 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using WebApplication1.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
 
@@ -61,6 +60,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddTransient<ITokenGenerator, TokenService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
 builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddScoped<UsersExceptionFilter>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
