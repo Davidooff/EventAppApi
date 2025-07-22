@@ -57,8 +57,9 @@ builder.Services.AddAuthentication(options =>
     });
 //builder.Services.AddAuthorization(); 
 
-builder.Services.AddTransient<ITokenGenerator, TokenService>();
+builder.Services.AddSingleton<ITokenGenerator, TokenService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
+builder.Services.AddTransient<ISessionService, SessionService>();
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped<UsersExceptionFilter>();
