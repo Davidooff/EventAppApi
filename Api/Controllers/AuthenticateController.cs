@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using Application.Exceptions;
 using Application.Services;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Options;
+using Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -48,16 +50,21 @@ public class AuthenticateController : ControllerBase
     [Route("refresh")]
     public async Task<IActionResult> Refresh()
     {
-        var refreshToken = HttpContext.Request.Cookies[_refreshTokenPath];
-        if (string.IsNullOrEmpty(refreshToken))
+        var sessionId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+        var keyGuid = User.FindFirst(ClaimTypes.Authentication)?.Value;
+            
+        if (string.IsNullOrEmpty(sessionId) || string.IsNullOrEmpty(keyGuid))
             throw new InvalidTokenException();
         
-        var tokens = await _authService.Refresh(refreshToken);
+        var tokens = await _authService.Refresh(
+            int.Parse(sessionId), 
+            int.Parse(keyGuid));
+        
         AppendCookies(tokens);
         return Ok();
     }
 
-    private void AppendCookies(AuthResultDto authResultDto)
+    private void AppendCookies(AuthKeyPairDto authResultDto)
     {
         CookieOptions accOptions = new CookieOptions
         {
@@ -74,7 +81,7 @@ public class AuthenticateController : ControllerBase
             Path = "/api/auth/refresh"
         };
     
-        Response.Cookies.Append(_accessTokenPath, authResultDto.accessToken, accOptions);
-        Response.Cookies.Append(_refreshTokenPath, authResultDto.refreshToken, refOptions);
+        Response.Cookies.Append(_accessTokenPath, authResultDto.AccessToken, accOptions);
+        Response.Cookies.Append(_refreshTokenPath, authResultDto.RefreshToken, refOptions);
     }
 }

@@ -30,4 +30,9 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Interfaces\" />
+      <Folder Include="Models\" />
+    </ItemGroup>
+
 </Project>

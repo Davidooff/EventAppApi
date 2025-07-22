@@ -4,6 +4,7 @@ using System.Text;
 using Application.Exceptions;
 using Application.Interfaces;
 using Domain.Options;
+using Infrastructure.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,39 +12,65 @@ namespace Infrastructure.Services;
 
 public class TokenService: ITokenGenerator
 {
-    private readonly JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-    private readonly JwtOptions _jwtSettings;
+    private readonly JwtSecurityTokenHandler _tokenHandler = new();
     private readonly SigningCredentials _signingCredentials;
+    public JwtOptions JwtOptions { get; }
     
-    public TokenService(IOptions<JwtOptions> jwtSettings)
+    public TokenService(IOptions<JwtOptions> jwtOptions)
     {
-        _jwtSettings = jwtSettings.Value ?? throw new ArgumentNullException(nameof(jwtSettings));
+
+        this.JwtOptions = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions));
         _signingCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.JwtOptions.Secret)),
             SecurityAlgorithms.HmacSha256);
     }
-    
-    public (string accessToken, string refreshToken) GenerateTokens(int userId, int sessionId)
+
+
+
+    public AuthKeyPairDto GenerateTokens(int userId, int sessionId, int uuid)
     {
-        return (GenerateToken(userId, _jwtSettings.AccessTokenExpiration),
-            GenerateToken(sessionId, _jwtSettings.RefreshTokenExpiration));
+        return new AuthKeyPairDto
+        {
+            AccessToken = GenerateAccToken(userId, sessionId, JwtOptions.AccessTokenExpiration),
+            RefreshToken = GenerateRefToken(userId, sessionId, uuid, JwtOptions.RefreshTokenExpiration)
+        };
     }
-    
-    public string GenerateToken(int userId, int expirationMinutes)
+
+    private string GenerateAccToken(int userId, int sessionId, int expirationMinutes)
     {
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-            }),
+            Subject = new ClaimsIdentity([
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.SerialNumber, sessionId.ToString())
+                
+            ]),
             // Issuer = _jwtSettings.Issuer,
             // Audience = _jwtSettings.Audience,
             Expires = DateTime.UtcNow.AddMinutes(expirationMinutes),
             SigningCredentials = _signingCredentials
         };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        var token = _tokenHandler.CreateToken(tokenDescriptor);
+        return _tokenHandler.WriteToken(token);
+    }
+    
+    private string GenerateRefToken(int userId, int sessionId, int uuid, int expirationMinutes)
+    {
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity([
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.SerialNumber, sessionId.ToString()),
+                new Claim(ClaimTypes.Authentication, uuid.ToString())
+                
+            ]),
+            // Issuer = _jwtSettings.Issuer,
+            // Audience = _jwtSettings.Audience,
+            Expires = DateTime.UtcNow.AddMinutes(expirationMinutes),
+            SigningCredentials = _signingCredentials
+        };
+        var token = _tokenHandler.CreateToken(tokenDescriptor);
+        return _tokenHandler.WriteToken(token);
     }
 
     public string GetId(string token)
@@ -54,14 +81,14 @@ public class TokenService: ITokenGenerator
             IssuerSigningKey = _signingCredentials.Key,
             ValidateIssuer = false,
             // ValidIssuer = _jwtSettings.Issuer,
-            ValidateAudience = false,
             // ValidAudience = _jwtSettings.Audience,
+            ValidateAudience = false,
             ValidateLifetime = true 
         };
         string id;
         try
         {
-            id = tokenHandler.ValidateToken(token, tokenValidationParameters, out _)
+            id = _tokenHandler.ValidateToken(token, tokenValidationParameters, out _)
                 .FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new InvalidTokenException();
         } catch (Exception err)
         {

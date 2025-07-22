@@ -7,17 +7,10 @@ namespace Infrastructure.Services;
 public class IdentityService : IIdentityService
 {
     private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
 
-    public IdentityService(UserManager<User> userManager, SignInManager<User> signInManager)
+    public IdentityService(UserManager<User> userManager)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
-    }
-
-    public async Task AddLoginAsync(User user)
-    {
-        await _signInManager.SignInAsync(user, isPersistent: false);
     }
 
     public async Task<(bool Succeeded, User user)> CheckPasswordByEmailAsync(string email, string password)
