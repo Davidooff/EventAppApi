@@ -4,6 +4,7 @@ namespace Application.Interfaces;
 
 public interface IIdentityService
 {
+    Task AddLoginAsync(User user);
     Task<(bool Succeeded, User user)> CheckPasswordByEmailAsync(string email, string password);
     Task<bool> CheckPasswordByUserAsync(User user, string password);
 

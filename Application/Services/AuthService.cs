@@ -32,7 +32,7 @@ public class AuthService
         {
             throw new InvalidCredentialsException();
         }
-
+        
         var newSession = new Sessions { UserId = user.Id };
         _context.Sessions.Add(newSession);
         await _context.SaveChangesAsync();

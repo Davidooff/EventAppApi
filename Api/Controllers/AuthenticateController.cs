@@ -15,15 +15,15 @@ using WebApplication1.Filters;
 public class AuthenticateController : ControllerBase
 {
     private readonly AuthService _authService;
-    private readonly string accessTokenPath;
-    private readonly string refreshTokenPath;
+    private readonly string _accessTokenPath;
+    private readonly string _refreshTokenPath;
 
     
     public AuthenticateController(AuthService authService, IOptions<JwtOptions> jwtOptions)
     {
         _authService = authService;
-        accessTokenPath = jwtOptions.Value.AccessTokenStorage;
-        refreshTokenPath = jwtOptions.Value.RefreshTokenStorage;
+        _accessTokenPath = jwtOptions.Value.AccessTokenStorage;
+        _refreshTokenPath = jwtOptions.Value.RefreshTokenStorage;
     }
     
     [HttpPost]
@@ -48,7 +48,7 @@ public class AuthenticateController : ControllerBase
     [Route("refresh")]
     public async Task<IActionResult> Refresh()
     {
-        var refreshToken = HttpContext.Request.Cookies[refreshTokenPath];
+        var refreshToken = HttpContext.Request.Cookies[_refreshTokenPath];
         if (string.IsNullOrEmpty(refreshToken))
             throw new InvalidTokenException();
         
@@ -74,7 +74,7 @@ public class AuthenticateController : ControllerBase
             Path = "/api/auth/refresh"
         };
     
-        Response.Cookies.Append(accessTokenPath, authResultDto.accessToken, accOptions);
-        Response.Cookies.Append(refreshTokenPath, authResultDto.refreshToken, refOptions);
+        Response.Cookies.Append(_accessTokenPath, authResultDto.accessToken, accOptions);
+        Response.Cookies.Append(_refreshTokenPath, authResultDto.refreshToken, refOptions);
     }
 }
