@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "qN3QTvbK0fw=",
+  "dgSpecHash": "4RUnOldop38=",
   "success": true,
   "projectFilePath": "/home/david/RiderProjects/WebApplication1/Infrastructure/Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -61,8 +61,12 @@
     "/home/david/.nuget/packages/microsoft.netcore.platforms/2.0.0/microsoft.netcore.platforms.2.0.0.nupkg.sha512",
     "/home/david/.nuget/packages/microsoft.win32.registry/4.5.0/microsoft.win32.registry.4.5.0.nupkg.sha512",
     "/home/david/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
+    "/home/david/.nuget/packages/nettopologysuite/2.5.0/nettopologysuite.2.5.0.nupkg.sha512",
     "/home/david/.nuget/packages/npgsql/9.0.3/npgsql.9.0.3.nupkg.sha512",
     "/home/david/.nuget/packages/npgsql.entityframeworkcore.postgresql/9.0.4/npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
+    "/home/david/.nuget/packages/nredisstack/1.0.0/nredisstack.1.0.0.nupkg.sha512",
+    "/home/david/.nuget/packages/pipelines.sockets.unofficial/2.2.8/pipelines.sockets.unofficial.2.2.8.nupkg.sha512",
+    "/home/david/.nuget/packages/stackexchange.redis/2.8.58/stackexchange.redis.2.8.58.nupkg.sha512",
     "/home/david/.nuget/packages/system.buffers/4.6.0/system.buffers.4.6.0.nupkg.sha512",
     "/home/david/.nuget/packages/system.codedom/6.0.0/system.codedom.6.0.0.nupkg.sha512",
     "/home/david/.nuget/packages/system.collections.immutable/7.0.0/system.collections.immutable.7.0.0.nupkg.sha512",
@@ -74,6 +78,7 @@
     "/home/david/.nuget/packages/system.composition.typedparts/7.0.0/system.composition.typedparts.7.0.0.nupkg.sha512",
     "/home/david/.nuget/packages/system.identitymodel.tokens.jwt/8.12.1/system.identitymodel.tokens.jwt.8.12.1.nupkg.sha512",
     "/home/david/.nuget/packages/system.io.pipelines/7.0.0/system.io.pipelines.7.0.0.nupkg.sha512",
+    "/home/david/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
     "/home/david/.nuget/packages/system.reflection.metadata/7.0.0/system.reflection.metadata.7.0.0.nupkg.sha512",
     "/home/david/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "/home/david/.nuget/packages/system.security.accesscontrol/4.5.0/system.security.accesscontrol.4.5.0.nupkg.sha512",
@@ -83,7 +88,7 @@
     "/home/david/.nuget/packages/system.text.encodings.web/8.0.0/system.text.encodings.web.8.0.0.nupkg.sha512",
     "/home/david/.nuget/packages/system.text.json/9.0.7/system.text.json.9.0.7.nupkg.sha512",
     "/home/david/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512",
-    "/home/david/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.5/microsoft.aspnetcore.app.ref.9.0.5.nupkg.sha512"
+    "/home/david/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.7/microsoft.aspnetcore.app.ref.9.0.7.nupkg.sha512"
   ],
   "logs": []
 }
