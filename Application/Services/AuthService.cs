@@ -2,6 +2,7 @@ using Application.Exceptions;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Models;
+using StackExchange.Redis;
 using WebApplication1.Dto;
 
 namespace Application.Services;
@@ -22,7 +23,7 @@ public class AuthService
         var user = await _identityService.GetUserByEmailAsync(loginDtoDto.Email);
         if (user == null)
             throw new UserNotFoundException();
-
+            
         if (!await _identityService.CheckPasswordByUserAsync(user, loginDtoDto.Password))
             throw new InvalidCredentialsException();
         
@@ -43,13 +44,13 @@ public class AuthService
         if (newUser == null)
             throw new UnableToCreateException();
         
-        var tokens = await _sessionService.Create(user.Id);
+        var tokens = await _sessionService.Create(newUser.Id);
         return tokens;
     }
 
-    public async Task<AuthKeyPairDto> Refresh(int sessionId, int keyUidPayload)
+    public async Task<AuthKeyPairDto> Refresh(string sessionId)
     {
-        var tokens = await _sessionService.Refresh(sessionId, keyUidPayload);
+        var tokens = await _sessionService.Refresh(sessionId);
         return tokens;
     }
 }

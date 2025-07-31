@@ -12,7 +12,6 @@ public interface IDatabaseContext
     public DbSet<Category> Categories { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<Speaker> Speakers { get; set; }
-    public DbSet<Sessions> Sessions { get; set; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

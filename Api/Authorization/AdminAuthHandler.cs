@@ -6,7 +6,7 @@ using WebApplication1.Authorization.RequirementsData;
 
 namespace WebApplication1.Authorization;
 
-public class AdminAuth(ILogger<AdminAuth> logger, RedisSessionsService sessionService,RedisUserService userService) 
+public class AdminAuthHandler(ILogger<AdminAuthHandler> logger, RedisSessionsService sessionService,RedisUserService userService) 
     : AuthorizationHandler<AdminLevelAuthAttribute>
 {
     // Check whether a given minimum age requirement is satisfied.
@@ -19,9 +19,9 @@ public class AdminAuth(ILogger<AdminAuth> logger, RedisSessionsService sessionSe
 
         var sessionId = context.User.FindFirst(ClaimTypes.SerialNumber)?.Value;
         var userIdStr = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
-        
-        if (sessionId == null || userIdStr == null || int.TryParse(userIdStr, out var userId))
+
+        logger.LogInformation($"Evaluating authorization requirement for: session - {sessionId}, userId - {userIdStr}");
+        if (sessionId == null || userIdStr == null || !int.TryParse(userIdStr, out var userId))
             return;
 
         if (requirement.AccessLevel == 0)

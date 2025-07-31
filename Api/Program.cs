@@ -1,13 +1,19 @@
 using System.Text;
 using Application.Interfaces;
 using Application.Services;
+using Domain.Entities;
 using Domain.Options;
+using Infrastructure.Redis;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
+using WebApplication1.Authorization;
+using WebApplication1.Authorization.RequirementsData;
 using WebApplication1.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +24,11 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<DatabaseOption>(builder.Configuration.GetSection("Database"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
+builder.Services.AddScoped<IAuthorizationHandler,
+    AdminAuthHandler>();
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+
 builder.Services.AddDbContext<IDatabaseContext, DatabaseContext>((serviceProvider, options) =>
 {
     var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>().Value;
@@ -26,7 +37,7 @@ builder.Services.AddDbContext<IDatabaseContext, DatabaseContext>((serviceProvide
 });
 
 // Add identity manager
-builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+builder.Services.AddDefaultIdentity<User>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
         options.Password.RequiredLength = 6;
@@ -44,19 +55,32 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer(options =>
     {
-        options.SaveToken = true;
         options.RequireHttpsMetadata = false; // Set to true in production
-        options.TokenValidationParameters = new TokenValidationParameters()
+        options.Events = new JwtBearerEvents
         {
-            // ValidateIssuer = true,
-            // ValidateAudience = true,
-            // ValidAudience = builder.Configuration["Jwt:Audience"],
-            // ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            OnMessageReceived = context =>
+            {
+                // Try to read the token from the cookie
+                context.Token = context.Request.Cookies[builder.Configuration["Jwt:AccessTokenStorage"]];
+                return Task.CompletedTask;
+            }
+        };
+        options.TokenValidationParameters = new TokenValidationParameters(){
+            ValidateIssuer = false,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+
+            ValidateAudience = false,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+        
+            ValidateLifetime = false,
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
         };
     });
 //builder.Services.AddAuthorization(); 
-
+builder.Services.AddScoped<RedisUserService>();
+builder.Services.AddScoped<RedisSessionsService>();
 builder.Services.AddSingleton<ITokenGenerator, TokenService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
 builder.Services.AddTransient<ISessionService, SessionService>();
@@ -68,6 +92,10 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+var muxer = app.Services.GetRequiredService<IConnectionMultiplexer>();
+RedisSessionsService.CreateIndex(muxer);
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -76,7 +104,8 @@ if (app.Environment.IsDevelopment())
 
 app.UsePathBase(new PathString("/api"));
 
-/*app.UseAuthorization();*/
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

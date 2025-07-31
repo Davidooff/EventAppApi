@@ -1,3 +1,4 @@
+using Domain.Entities;
 using WebApplication1.Dto;
 
 namespace Application.Interfaces;

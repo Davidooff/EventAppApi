@@ -6,7 +6,7 @@ namespace Application.Interfaces;
 public interface ITokenGenerator
 {
     public JwtOptions JwtOptions { get; }
-    public AuthKeyPairDto GenerateTokens(int userId, int sessionId, int uuid);
+    public AuthKeyPairDto GenerateTokens(int userId, string sessionId);
     public string GetId(string token);
     
 }

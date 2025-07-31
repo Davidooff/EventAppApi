@@ -5,9 +5,11 @@ using Domain.Constants;
 using Domain.Entities;
 using Domain.Options;
 using Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using WebApplication1.Authorization.RequirementsData;
 using WebApplication1.Dto;
 using WebApplication1.Filters;
 
@@ -51,14 +53,12 @@ public class AuthenticateController : ControllerBase
     public async Task<IActionResult> Refresh()
     {
         var sessionId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
-        var keyGuid = User.FindFirst(ClaimTypes.Authentication)?.Value;
-            
-        if (string.IsNullOrEmpty(sessionId) || string.IsNullOrEmpty(keyGuid))
+        Console.WriteLine($"Session: {sessionId}");
+        
+        if (string.IsNullOrEmpty(sessionId))
             throw new InvalidTokenException();
         
-        var tokens = await _authService.Refresh(
-            int.Parse(sessionId), 
-            int.Parse(keyGuid));
+        var tokens = await _authService.Refresh(sessionId);
         
         AppendCookies(tokens);
         return Ok();
