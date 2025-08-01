@@ -15,15 +15,15 @@ public class SessionService: ISessionService
     private readonly ITokenGenerator _tokenService;
     private IDatabase _redis;
     private JwtOptions _jwtOptions;
-    private readonly RedisSessionsService _redisSessionsService;
-    private readonly RedisUserService _redisUserService;
+    private readonly ISessions _redisSessionsService;
+    private readonly IUserCash _redisUserService;
     
 
     public SessionService(ITokenGenerator tokenService,
         IConnectionMultiplexer muxer, 
         IOptions<JwtOptions> jwtOptions,
-        RedisSessionsService redisSessionsService,
-        RedisUserService redisUserService)
+        ISessions redisSessionsService,
+        IUserCash redisUserService)
     {
         _tokenService = tokenService;
         _redis = muxer.GetDatabase();

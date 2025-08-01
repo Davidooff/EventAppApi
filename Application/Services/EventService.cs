@@ -32,6 +32,12 @@ public class EventService
         return _context.SaveChangesAsync();
     }
     
+    public Task UpdateAsync(Event newEvent)
+    {
+        _context.Events.Update(newEvent);
+        return _context.SaveChangesAsync();
+    }
+    
     public Task<Event?> GetEventInfo(int eventId)
     {
         return _context.Events.Include(e => e.Schedules)
