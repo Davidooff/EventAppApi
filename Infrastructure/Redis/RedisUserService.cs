@@ -27,7 +27,7 @@ public class RedisUserService : IUserCash
             if (user == null)
                 throw new UserNotFoundException();
             
-            await db.HashSetAsync($"user:{id}", user.ToHashEntries())
+            await db.HashSetAsync($"user:{id}", user.ConvertToCash().ToHashEntries())
                 .ConfigureAwait(false);
             
             return user.ConvertToCash();
