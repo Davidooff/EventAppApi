@@ -1,10 +1,14 @@
 using System.Security.Claims;
 using Application.Exceptions;
+using Application.Extensions;
+using Application.Interfaces;
 using Application.Services;
 using Domain.Constants;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Options;
 using Infrastructure.Models;
+using Infrastructure.Redis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +25,16 @@ public class AuthenticateController : ControllerBase
     private readonly AuthService _authService;
     private readonly string _accessTokenPath;
     private readonly string _refreshTokenPath;
-
+    private readonly ISessions _sessionsService;
+    private readonly IUserCash _userCash;
     
-    public AuthenticateController(AuthService authService, IOptions<JwtOptions> jwtOptions)
+    public AuthenticateController(AuthService authService, IOptions<JwtOptions> jwtOptions, ISessions sessionsService, IUserCash userCash)
     {
         _authService = authService;
         _accessTokenPath = jwtOptions.Value.AccessTokenStorage;
         _refreshTokenPath = jwtOptions.Value.RefreshTokenStorage;
+        _sessionsService = sessionsService;
+        _userCash = userCash;
     }
     
     [HttpPost]
@@ -62,6 +69,28 @@ public class AuthenticateController : ControllerBase
         
         AppendCookies(tokens);
         return Ok();
+    }
+
+    // [AdminLevelAuth((EUserPermissions) 1)]
+    [HttpOptions("admin")]
+    // [Route("admin")]
+    
+    public async Task<IActionResult> GetAdminOptions()
+    {
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var sessionId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
+
+        if (string.IsNullOrEmpty(sessionId) || string.IsNullOrEmpty(sessionId) || !int.TryParse(userIdStr, out var userId)) 
+            throw new InvalidTokenException();
+
+        var session = _sessionsService.GetSession(sessionId);
+        var user = _userCash.GetUser(userId);
+        await Task.WhenAll(session, user);
+        
+        if (session == null)
+            throw new InvalidTokenException();
+        
+        return Ok(user.Result.AccessLevel.PermittedPanels());
     }
 
     private void AppendCookies(AuthKeyPairDto authResultDto)

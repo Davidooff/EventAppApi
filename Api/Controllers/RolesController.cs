@@ -17,7 +17,7 @@ public class RolesController : ControllerBase
 {
     private readonly IDatabaseContext _databaseContext;
     private readonly UserService _userService;
-    public RolesController(IDatabaseContext databaseContext, UserService userService)
+    public RolesController(IDatabaseContext databaseContext, UserService userService, IUserCash userCash)
     {
         _databaseContext = databaseContext;
         _userService = userService;

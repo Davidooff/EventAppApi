@@ -1,13 +1,18 @@
 using System.Security.Claims;
 using Application.Interfaces;
+using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Redis;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using WebApplication1.Authorization.RequirementsData;
 
 namespace WebApplication1.Authorization;
 
-public class AdminAuthHandler(ILogger<AdminAuthHandler> logger, ISessions sessionService,IUserCash userService) 
+public class AdminAuthHandler(
+    ILogger<AdminAuthHandler> logger, 
+    ISessions sessionService,
+    IUserCash userService) 
     : AuthorizationHandler<AdminLevelAuthAttribute>
 {
     // Check whether a given minimum age requirement is satisfied.
