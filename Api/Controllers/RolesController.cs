@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.Exceptions;
 using Application.Interfaces;
+using Application.Services;
 using Domain.Enums;
 using Infrastructure.Redis;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +16,8 @@ namespace WebApplication1.Controllers;
 public class RolesController : ControllerBase
 {
     private readonly IDatabaseContext _databaseContext;
-    private readonly RedisUserService _userService;
-    public RolesController(IDatabaseContext databaseContext, RedisUserService userService)
+    private readonly UserService _userService;
+    public RolesController(IDatabaseContext databaseContext, UserService userService)
     {
         _databaseContext = databaseContext;
         _userService = userService;
@@ -25,22 +26,14 @@ public class RolesController : ControllerBase
     [HttpGet("")]
     public async Task<IActionResult> GetUsersWithRoles()
     {
-        var users = await _databaseContext.Users.Where(u => u.AccessLevel > 0).ToArrayAsync();
+        var users = await _userService.GetUsersWithAccessLevelHigherOrEqual((EUserPermissions) 1);
         return Ok(users);
     }
     
     [HttpPatch("")]
     public async Task<IActionResult> SetUserRole(ChangeUserRoleDto changeRole)
     {
-        var user = await _databaseContext.Users.FindAsync(changeRole.UserId);
-        
-        if (user == null)
-            throw new UserNotFoundException();
-
-        _userService.UpdateUser(changeRole.UserId);
-        user.AccessLevel = changeRole.NewRole;
-        _databaseContext.Users.Update(user);
-        await _databaseContext.SaveChangesAsync();
-        return Ok();
+        var user = await _userService.UpdateUserAccessLevel(changeRole.UserId, changeRole.NewRole);
+        return Ok(user);
     }
 }

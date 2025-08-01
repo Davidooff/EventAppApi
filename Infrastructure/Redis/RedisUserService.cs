@@ -5,7 +5,7 @@ using StackExchange.Redis;
 
 namespace Infrastructure.Redis;
 
-public class RedisUserService
+public class RedisUserService : IUserCash
 {
     private readonly IConnectionMultiplexer _muxer;
     private readonly IDatabaseContext _dbContext;
@@ -52,5 +52,11 @@ public class RedisUserService
             .ConfigureAwait(false);
         
         return true;
+    }
+
+    public async Task<bool> IsCashed(int id)
+    {
+        IDatabase db = _muxer.GetDatabase(1);
+        return await db.KeyExistsAsync($"user:{id}");
     }
 }

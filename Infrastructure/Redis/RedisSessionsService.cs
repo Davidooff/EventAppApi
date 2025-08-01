@@ -1,3 +1,4 @@
+using Application.Interfaces;
 using Domain.Entities;
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
@@ -6,7 +7,7 @@ using StackExchange.Redis;
 
 namespace Infrastructure.Redis;
 
-public class RedisSessionsService
+public class RedisSessionsService : ISessions
 {
     private readonly IConnectionMultiplexer _muxer;
     private const string IndexName = "idx:sessions";
@@ -67,7 +68,7 @@ public class RedisSessionsService
         return session;
     }
 
-    public async Task<bool> DeleteSession(string id)
+    public async Task<bool> RemoveSession(string id)
     {
         IDatabase db = _muxer.GetDatabase();
         return await db.KeyDeleteAsync($"{KeyPrefix}{id}");

@@ -79,8 +79,8 @@ builder.Services.AddAuthentication(options =>
         };
     });
 //builder.Services.AddAuthorization(); 
-builder.Services.AddScoped<RedisUserService>();
-builder.Services.AddScoped<RedisSessionsService>();
+builder.Services.AddScoped<IUserCash, RedisUserService>();
+builder.Services.AddScoped<ISessions, RedisSessionsService>();
 builder.Services.AddSingleton<ITokenGenerator, TokenService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
 builder.Services.AddTransient<ISessionService, SessionService>();

@@ -11,6 +11,7 @@ public class DatabaseContext : DbContext, IDatabaseContext
     public DbSet<Category> Categories { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<Speaker> Speakers { get; set; }
+    public DbSet<Schedule> Schedules { get; set; }
     public DbSet<User> Users { get; set; }
     
 
@@ -28,6 +29,17 @@ public class DatabaseContext : DbContext, IDatabaseContext
             .WithMany(c => c.Events) // Each Category has many Events
             .HasForeignKey(e => e.CategoryId); // The foreign key is Event.CategoryId
             // configure cascade delete, when category deleted, then all events getting deleted 
+            
+        modelBuilder.Entity<Event>()
+            .HasMany(e => e.Schedules)
+            .WithOne(s => s.Event)
+            .HasForeignKey(s => s.EventId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Schedule>()
+            .HasOne(u => u.Event)
+            .WithMany(e => e.Schedules)
+            .HasForeignKey(s => s.EventId);
 
         modelBuilder.Entity<Audience>()
             .HasOne(a => a.Event)
@@ -54,6 +66,12 @@ public class DatabaseContext : DbContext, IDatabaseContext
         modelBuilder.Entity<User>()
             .HasMany(u => u.Audiences)
             .WithOne(a => a.User)
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Speakers)
+            .WithOne(s => s.User)
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);
         

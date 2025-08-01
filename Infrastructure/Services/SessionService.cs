@@ -50,14 +50,18 @@ public class SessionService: ISessionService
         var session = await _redisSessionsService.GetSession(sessionId);
         if (session == null)
             throw new InvalidTokenException();
+
+        var rm = _redisSessionsService.RemoveSession(sessionId);
+        var st = _redisSessionsService.SetSession(session, Guid.NewGuid().ToString());
         
-        await _redisSessionsService.SetSession(session, sessionId);
+        await Task.WhenAll(rm, st);
+        
         return _tokenService.GenerateTokens(session.UserId, sessionId);
     }
 
     public Task Delete(string sessionId)
     {
-        return _redisSessionsService.DeleteSession(sessionId);
+        return _redisSessionsService.RemoveSession(sessionId);
     }
 
     public async Task DeleteAllSessions(string sessionId)

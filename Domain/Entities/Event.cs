@@ -8,7 +8,10 @@ public class Event
     public string Name { get; set; }
     public string Description { get; set; }
     public int CategoryId { get; set; }
+    public DateTime StartsAt { get; set; }
+    public DateTime EndsAt { get; set; }
     public Category Category { get; set; }
+    public ICollection<Schedule> Schedules { get; set; }
     public ICollection<Audience> Audiences { get; set; }
     public ICollection<Speaker> Speakers { get; set; }
 }
