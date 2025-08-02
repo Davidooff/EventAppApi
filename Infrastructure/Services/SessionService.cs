@@ -51,8 +51,9 @@ public class SessionService: ISessionService
         if (session == null)
             throw new InvalidTokenException();
 
+        sessionId = Guid.NewGuid().ToString();  
         var rm = _redisSessionsService.RemoveSession(sessionId);
-        var st = _redisSessionsService.SetSession(session, Guid.NewGuid().ToString());
+        var st = _redisSessionsService.SetSession(session, sessionId);
         
         await Task.WhenAll(rm, st);
         

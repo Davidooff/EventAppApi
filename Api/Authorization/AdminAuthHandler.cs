@@ -42,9 +42,13 @@ public class AdminAuthHandler(
         var user = userService.GetUser(userId);
         var session = sessionService.GetSession(sessionId);
         await Task.WhenAll(user, session);
-        if (session.Result == null)
+        if (session.Result == null || user.Result.AccessLevel < requirement.AccessLevel)
             return;
         
+        if (context.Resource is HttpContext httpContext)
+        {
+            httpContext.Items.Add(ClaimTypes.UserData, user.Result);
+        }
         if (user.Result.AccessLevel >= requirement.AccessLevel) 
             context.Succeed(requirement);
     }

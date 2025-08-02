@@ -71,26 +71,15 @@ public class AuthenticateController : ControllerBase
         return Ok();
     }
 
-    // [AdminLevelAuth((EUserPermissions) 1)]
-    [HttpOptions("admin")]
-    // [Route("admin")]
+    [AdminLevelAuth((EUserPermissions) 1)]
+    [HttpGet("admin")]
     
     public async Task<IActionResult> GetAdminOptions()
     {
-        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var sessionId = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
-
-        if (string.IsNullOrEmpty(sessionId) || string.IsNullOrEmpty(sessionId) || !int.TryParse(userIdStr, out var userId)) 
-            throw new InvalidTokenException();
-
-        var session = _sessionsService.GetSession(sessionId);
-        var user = _userCash.GetUser(userId);
-        await Task.WhenAll(session, user);
-        
-        if (session == null)
+        if (!HttpContext.Items.TryGetValue(ClaimTypes.UserData, out var user) || user is not UserCash userCash)
             throw new InvalidTokenException();
         
-        return Ok(user.Result.AccessLevel.PermittedPanels());
+        return Ok(userCash.AccessLevel.PermittedPanels());
     }
 
     private void AppendCookies(AuthKeyPairDto authResultDto)

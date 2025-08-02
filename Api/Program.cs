@@ -31,6 +31,22 @@ builder.Services.AddScoped<IAuthorizationHandler,
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
 
+builder.Services.AddTransient<IClaimsTransformation, UserClaimsTransformation>();
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173") // Your Vite app's origin
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
+
 builder.Services.AddDbContext<IDatabaseContext, DatabaseContext>((serviceProvider, options) =>
 {
     var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>().Value;
@@ -106,7 +122,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UsePathBase(new PathString("/api"));
-
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 
